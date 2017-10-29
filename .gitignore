@@ -1,0 +1,11 @@
+# Ignore composer stuff
+/vendor/
+composer.lock
+
+# Ignore concrete5 stuff
+public/concrete
+public/application/files
+
+# Ignore developer stuff
+.idea
+.env
