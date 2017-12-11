@@ -63,3 +63,20 @@
  *
  * ----------------------------------------------------------------------------
  */
+$app->extend(\Concrete\Core\Routing\RouterInterface::class, function($router) use ($app) {
+    $router->register('/feed.rss', function() use ($app) {
+        $em = $app->make(\Doctrine\ORM\EntityManager::class);
+        $repo = $em->getRepository(\Concrete\Core\Entity\Express\Entity::class);
+
+        $entity = $repo->findOneBy(['handle' => 'episode']);
+        $podcast = new \Blockstars\Podcast\BlockstarsPodcast($entity);
+
+        $manager = new \League\Fractal\Manager();
+        $manager->setSerializer(new \League\Fractal\Serializer\ArraySerializer);
+
+        $renderer = new \Blockstars\Podcast\PodcastFeedRenderer($manager);
+        return new \Symfony\Component\HttpFoundation\Response($renderer->renderPodcast($podcast));
+    });
+
+    return $router;
+});
